@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Vidéo obligatoire avant inscription</title>
+
+  <!-- API officielle Vimeo -->
+  <script src="https://player.vimeo.com/api/player.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+
+    iframe {
+      max-width: 100%;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 12px 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Merci de regarder la vidéo jusqu’au bout avant de vous inscrire</h2>
+
+  <!-- Lecteur Vimeo -->
+  <div style="max-width:640px;margin:auto;">
+    <iframe
+      id="vimeoPlayer"
+      src="https://player.vimeo.com/video/1151578612"
+      width="640"
+      height="360"
+      frameborder="0"
+      allow="autoplay; fullscreen"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- Bouton Weezevent -->
+  <button id="inscriptionBtn" disabled>
+    Accéder au formulaire d’inscription
+  </button>
+
+  <script>
+    const iframe = document.getElementById('vimeoPlayer');
+    const player = new Vimeo.Player(iframe);
+    const btn = document.getElementById('inscriptionBtn');
+
+    let maxWatched = 0;
+
+    // Mémorise le temps réellement regardé
+    player.on('timeupdate', function (data) {
+      if (data.seconds > maxWatched) {
+        maxWatched = data.seconds;
+      }
+    });
+
+    // Empêche l'avance rapide
+    player.on('seeked', function (data) {
+      if (data.seconds > maxWatched + 0.5) {
+        player.setCurrentTime(maxWatched);
+      }
+    });
+
+    // Active le bouton UNIQUEMENT à la fin
+    player.on('ended', function () {
+      btn.disabled = false;
+    });
+
+    // Redirection vers Weezevent
+    btn.addEventListener('click', function () {
+      window.location.href =
+        "https://my.weezevent.com/composteurinterconormandiesudeure";
+    });
+  </script>
+
+</body>
+</html>
